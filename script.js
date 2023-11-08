@@ -8,11 +8,6 @@ const yearOut = document.getElementById("YY");
 
 const form = document.querySelector("form");
 
-const date = new Date();
-let day = date.getDate();
-let month = 1 + date.getMonth();
-let year = date.getFullYear();
-
 function isLeapYear(year) {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 }
@@ -48,12 +43,27 @@ function validate() {
       validator = true;
     }
   });
+
+  // Check if the selected date is not in the future
+  const selectedDate = new Date(yearInput.value, monthInput.value - 1, dayInput.value);
+  const currentDate = new Date();
+  if (selectedDate > currentDate) {
+    validator = false;
+    yearInput.style.borderColor = "red";
+    yearInput.parentElement.querySelector("small").innerText = "Selected date is in the future.";
+  }
+
   return validator;
 }
 
 function handleSubmit(e) {
   e.preventDefault();
   if (validate()) {
+    const date = new Date();
+    let day = date.getDate();
+    let month = 1 + date.getMonth();
+    let year = date.getFullYear();
+
     if (dayInput.value > day) {
       day = day + daysInMonth(month - 1, year);
       month = month - 1;
